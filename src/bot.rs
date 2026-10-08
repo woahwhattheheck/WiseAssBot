@@ -260,7 +260,11 @@ impl Bot {
             join_message_id: msg.message_id.0,
             reported_at,
         };
-        let key = report_key(msg.chat.id, reported_user_id, reporter_id, reported_at);
+        let key = format!(
+            "{}:{}",
+            report_key(msg.chat.id, reported_user_id, reporter_id, reported_at),
+            callback_query_id
+        );
         let value = serde_json::to_string(&entry).map_err(|e| Error::RustError(e.to_string()))?;
         self.kv.put(&key, value)?.execute().await?;
 
